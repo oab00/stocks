@@ -3,6 +3,7 @@
 angular.module('stocksApp')
   .controller('MainCtrl', function ($scope, $http, socket) {
     $scope.awesomeThings = [];
+    $scope.warning = null;
 
     $http.get('/api/things').success(function(awesomeThings) {
       $scope.awesomeThings = awesomeThings;
@@ -14,12 +15,28 @@ angular.module('stocksApp')
       if($scope.newThing === '') {
         return;
       }
+
+      $scope.warning = null;
+      $scope.newThing = $scope.newThing;
+
+      for (var i=0; i<$scope.awesomeThings.length; i+=1) {
+        if ($scope.awesomeThings[i].name === $scope.newThing.toUpperCase()) {
+          $scope.warning = 'Symbol already exists!';
+          return;
+        }
+      }
+
       $http.post('/api/things', { name: $scope.newThing.toUpperCase() });
       $scope.newThing = '';
     };
 
     $scope.deleteThing = function(thing) {
-      $http.delete('/api/things/' + thing._id);
+      if ($scope.awesomeThings.length > 1) {
+        $scope.warning = null;
+        $http.delete('/api/things/' + thing._id);
+        return;
+      }
+      $scope.warning = 'Must leave at least 1 symbol.';
     };
 
     $scope.$on('$destroy', function () {

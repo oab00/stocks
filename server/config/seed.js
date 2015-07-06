@@ -12,7 +12,9 @@ Thing.find({}).remove(function() {
   Thing.create({
     name : 'MSFT'
   }, {
-    name : 'GOOGL'
+    name : 'GOOG'
+  }, {
+    name : 'AAPL'
   });
 });
 
