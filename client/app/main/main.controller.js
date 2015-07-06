@@ -5,6 +5,7 @@ angular.module('stocksApp')
     $scope.awesomeThings = [];
     $scope.warning = null;
     $scope.connectedUsers = 0;
+    $scope.spinLoad = false; // TODO: load spinner
 
     socket.socket.on('connectedUsers', function(connectedUsers) {
       $scope.connectedUsers = connectedUsers;
@@ -80,6 +81,7 @@ angular.module('stocksApp')
     };
 
     $scope.gotThings = function() {
+        
         var seriesOptions = [],
             seriesCounter = 0,
             names = $scope.awesomeThings.map(function(awesomeThing) {
@@ -140,7 +142,6 @@ angular.module('stocksApp')
                 // As we're loading the data asynchronously, we don't know what order it will arrive. So
                 // we keep a counter and create the chart when all the data is loaded.
                 seriesCounter += 1;
-                
 
                 if (seriesCounter === names.length) {
                     createChart();

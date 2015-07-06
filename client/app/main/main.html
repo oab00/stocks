@@ -21,7 +21,8 @@
   </div>
 
   <form class="thing-form">
-    <label>Add stock symbols to display on graph:</label>
+    <label>Add stock symbols to display on graph:</label> 
+    <img height="40px" width="40px" ng-show="spinLoad" src="http://www.arabianbusiness.com/skins/ab.main/gfx/loading_spinner.gif">
     <label style="float: right;">{{ connectedUsers + (connectedUsers > 1 ? ' users' : ' user') }} online</label>
     <p class="input-group">
       <input type="text" class="form-control" placeholder="Type a stock symbol" ng-model="newThing">
