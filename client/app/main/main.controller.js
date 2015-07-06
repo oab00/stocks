@@ -4,7 +4,12 @@ angular.module('stocksApp')
   .controller('MainCtrl', function ($scope, $http, socket) {
     $scope.awesomeThings = [];
     $scope.warning = null;
-    $scope.users = 0;
+    $scope.connectedUsers = 0;
+
+    console.log(socket);
+    socket.socket.on('connectedUsers', function(connectedUsers) {
+      $scope.connectedUsers = connectedUsers;
+    });
 
     var randomStocks = ['AAPL', 'MSFT', 'GOOG'];
 

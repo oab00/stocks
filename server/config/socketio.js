@@ -37,6 +37,8 @@ module.exports = function (socketio) {
   //   handshake: true
   // }));
 
+  var connectedUsers = 0;
+
   socketio.on('connection', function (socket) {
     socket.address = socket.handshake.address !== null ?
             socket.handshake.address.address + ':' + socket.handshake.address.port :
@@ -47,11 +49,19 @@ module.exports = function (socketio) {
     // Call onDisconnect.
     socket.on('disconnect', function () {
       onDisconnect(socket);
+      connectedUsers -= 1;
       console.info('[%s] DISCONNECTED', socket.address);
+      socketio.emit('connectedUsers', connectedUsers);
+
+      console.log('### USERS CONNECTED: ', connectedUsers, ' ###');
     });
 
     // Call onConnect.
     onConnect(socket);
+    connectedUsers += 1;
     console.info('[%s] CONNECTED', socket.address);
+    socketio.emit('connectedUsers', connectedUsers);
+
+    console.log('### USERS CONNECTED: ', connectedUsers, ' ###');
   });
 };
