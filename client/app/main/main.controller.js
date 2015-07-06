@@ -6,7 +6,8 @@ angular.module('stocksApp')
 
     $http.get('/api/things').success(function(awesomeThings) {
       $scope.awesomeThings = awesomeThings;
-      socket.syncUpdates('thing', $scope.awesomeThings);
+      $scope.gotThings();
+      socket.syncUpdates('thing', $scope.awesomeThings, $scope.gotThings);
     });
 
     $scope.addThing = function() {
@@ -25,17 +26,47 @@ angular.module('stocksApp')
       socket.unsyncUpdates('thing');
     });
 
-    $(function () {
+    $scope.gotThings = function() {
         var seriesOptions = [],
             seriesCounter = 0,
-            names = ['MSFT', 'AAPL', 'GOOG'],
+            names = $scope.awesomeThings.map(function(awesomeThing) {
+              return awesomeThing.name;
+            }),
+
             // create the chart when all data is loaded
             createChart = function () {
 
                 $('#container').highcharts('StockChart', {
 
                     navigator: {
-                      enabled: false
+                        enabled: false
+                    },
+
+                    scrollbar: {
+                        enabled: false
+                    },
+
+                    rangeSelector: {
+                        selected: 4
+                    },
+
+                    yAxis: {
+                        labels: {
+                            formatter: function () {
+                                return (this.value > 0 ? ' + ' : '') + this.value + '%';
+                            }
+                        },
+                        plotLines: [{
+                            value: 0,
+                            width: 2,
+                            color: 'silver'
+                        }]
+                    },
+
+                    plotOptions: {
+                        series: {
+                            compare: 'percent'
+                        }
                     },
 
                     tooltip: {
@@ -65,5 +96,5 @@ angular.module('stocksApp')
                 }
             });
         });
-    });
+    }
   });
