@@ -4,6 +4,9 @@ angular.module('stocksApp')
   .controller('MainCtrl', function ($scope, $http, socket) {
     $scope.awesomeThings = [];
     $scope.warning = null;
+    $scope.users = 0;
+
+    var randomStocks = ['AAPL', 'MSFT', 'GOOG'];
 
     $http.get('/api/things').success(function(awesomeThings) {
       $scope.awesomeThings = awesomeThings;
@@ -21,7 +24,7 @@ angular.module('stocksApp')
 
       for (var i=0; i<$scope.awesomeThings.length; i+=1) {
         if ($scope.awesomeThings[i].name === $scope.newThing.toUpperCase()) {
-          $scope.warning = 'Symbol already exists!';
+          $scope.warning = 'Stock symbol already exists!';
           return;
         }
       }
@@ -36,12 +39,31 @@ angular.module('stocksApp')
         $http.delete('/api/things/' + thing._id);
         return;
       }
-      $scope.warning = 'Must leave at least 1 symbol.';
+      $scope.warning = 'Must leave at least 1 stock symbol.';
     };
 
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('thing');
     });
+
+    $scope.addRandom = function() {
+      var random = '';
+      randomStocks.forEach(function(randomStock) {
+        var checkStocks = $scope.awesomeThings.map(function(awesomeThing) {
+          return awesomeThing.name;
+        });
+        if (checkStocks.indexOf(randomStock) === -1) {
+          random = randomStock;
+        }
+      });
+
+      $scope.newThing = random;
+      $scope.addThing();
+    };
+
+    $scope.dismiss = function() {
+      $scope.warning = null;
+    };
 
     $scope.gotThings = function() {
         var seriesOptions = [],
